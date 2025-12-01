@@ -1,0 +1,22 @@
+<div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+    <div class="flex-1">
+        <a href="/landing" class="btn btn-ghost text-xl text-primary font-bold">Mantri Duit 💸</a>
+    </div>
+    <div class="flex-none">
+        {% if user.is_authenticated %}
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
+                    {{ user.username|slice:":2"|upper }}
+                </div>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a>Profile</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <a href="/login" class="btn btn-sm btn-primary">Masuk</a>
+        {% endif %}
+    </div>
+</div>
