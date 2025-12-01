@@ -1,0 +1,19 @@
+{
+  "name": "mantri_duit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tailwindcss -i ./static/src/input.css -o ./static/dist/styles.css --watch",
+    "build": "tailwindcss -i ./static/src/input.css -o ./static/dist/styles.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "daisyui": "^5.5.5",
+    "tailwindcss": "^4.1.17"
+  }
+}
