@@ -10,18 +10,20 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 
-<body class="bg-gray-50 min-h-screen text-slate-800 font-sans">
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    <nav class="navbar bg-base-100 shadow-sm mb-8">
-        <div class="flex-1">
-            <a class="btn btn-ghost text-xl text-primary font-bold">Mantri Duit 💸</a>
-        </div>
-    </nav>
+    {% include 'partials/navbar.html' %}
 
-    <main class="container mx-auto px-4 pb-20">
+    <main class="grow container mx-auto px-4 py-6 max-w-md">
         {% block content %}
         {% endblock %}
     </main>
+
+    <footer class="footer footer-center p-4 text-base-content">
+        <aside>
+            <p class="text-xs text-slate-400">Copyright © 2025 - Tim Mantri Duit</p>
+        </aside>
+    </footer>
 
 </body>
 
