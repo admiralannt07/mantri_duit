@@ -94,42 +94,41 @@ def scan_receipt(request):
     if request.method == 'POST':
         form = ReceiptForm(request.POST, request.FILES)
         if form.is_valid():
-            # 1. Simpan object sementara (belum commit ke DB)
             transaction = form.save(commit=False)
             transaction.user = request.user
             
-            # 2. Panggil AI OCR
             ocr = OCRHandler()
-            # Ambil file gambar dari memory/request
             image_file = request.FILES['receipt_image']
-            
-            # 3. Proses!
             result = ocr.extract_receipt_data(image_file)
             
             if "error" in result:
                 messages.error(request, result["error"])
                 return redirect('scan_receipt')
 
-            # 4. Isi data otomatis dari hasil AI
+            # MAPPING DATA DARI AI
             transaction.merchant_name = result.get('merchant_name', 'Unknown')
             transaction.total_amount = result.get('total_amount', 0)
             transaction.transaction_date = result.get('transaction_date')
             transaction.category = result.get('category', 'Lain-lain')
-            transaction.raw_ocr_text = str(result) # Simpan log mentah
             
-            # 5. Simpan Final
+            # --- FITUR BARU: AUTO DETECT TIPE (IN/OUT) ---
+            # Default ke OUT kalau AI lupa ngasih field transaction_type
+            transaction.type = result.get('transaction_type', 'OUT') 
+            
+            transaction.raw_ocr_text = str(result)
             transaction.save()
             
-            # --- START AI REACTION ---
+            # AI Reaction
             try:
                 service = ChatService(request.user)
                 reaction = service.react_to_transaction(transaction)
-                # Tampilkan sebagai pesan sukses (tapi isinya omelan AI)
-                messages.success(request, f"✅ Nota Disimpan! Kata Mantri: \"{reaction}\"")
+                # Sesuaikan warna notif
+                if transaction.type == 'IN':
+                    messages.success(request, f"💰 Masuk! Kata Mantri: \"{reaction}\"")
+                else:
+                    messages.success(request, f"✅ Keluar! Kata Mantri: \"{reaction}\"")
             except Exception as e:
-                # Fallback kalau AI error/lambat
                 messages.success(request, "Nota berhasil disimpan.")
-            # --- END AI REACTION ---
             
             return redirect('dashboard')
     else:
