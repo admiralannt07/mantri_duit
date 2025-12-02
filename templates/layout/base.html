@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id" data-theme="emerald" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Mantri Duit{% endblock %}</title>
+
+    <!-- Tailwind CSS v4 + DaisyUI -->
+    <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Custom CSS untuk Design System Emerald Theme -->
+    <link rel="stylesheet" href="{% static 'src/input.css' %}" />
+  </head>
+
+  <body class="bg-slate-50 min-h-screen text-slate-800 font-outfit">
+    {% if messages %}
+    <div
+      class="toast toast-bottom toast-center sm:toast-end z-[9999] mb-4 sm:mb-8 mr-0 sm:mr-6 w-full max-w-[90vw] sm:max-w-md px-2 sm:px-0 space-y-3 fixed"
+    >
+      {% for message in messages %} {% with tag=message.tags %}
+      <div
+        class="group flex items-start gap-4 p-4 rounded-xl shadow-2xl bg-white border border-slate-100 relative overflow-hidden transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg {% if tag == 'error' %} border-l-[6px] border-l-red-600 {% elif tag == 'warning' %} border-l-[6px] border-l-yellow-500 {% else %} border-l-[6px] border-l-emerald-500 {% endif %}"
+      >
+        <div class="flex-shrink-0 mt-0.5">
+          {% if tag == 'error' %}
+          <div
+            class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center animate-pulse"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-red-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          {% elif tag == 'warning' %}
+          <div
+            class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-yellow-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+              ></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          {% else %}
+          <div
+            class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-emerald-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="flex-1 min-w-0 py-0.5">
+          <h3
+            class="font-montserrat font-bold text-sm uppercase tracking-wide mb-1 {% if tag == 'error' %} text-red-700 {% elif tag == 'warning' %} text-yellow-700 {% else %} text-emerald-700 {% endif %}"
+          >
+            {% if tag == 'error' %}HEH! SALAH ITU! 😤 
+            {% elif tag == 'warning' %}WASPADA BOS! ⚠️ {% else %}MANTAP JIWA! 💸{% endif %}
+          </h3>
+          <p
+            class="font-poppins text-sm text-slate-600 leading-snug break-words"
+          >
+            {{ message }}
+          </p>
+        </div>
+
+        <button
+          onclick="this.closest('.group').remove()"
+          class="absolute top-2 right-2 p-1 rounded-md text-slate-300 hover:text-slate-500 hover:bg-slate-100 transition-all"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      {% endwith %} {% endfor %}
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toasts = document.querySelectorAll(".toast > div");
+        toasts.forEach((toast, index) => {
+          setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translateX(100px)";
+            setTimeout(() => toast.remove(), 500);
+          }, 5000 + index * 1000);
+        });
+      });
+    </script>
+    {% endif %}
+
+    <main>{% block layout %}{% endblock %}</main>
+  </body>
+</html>

@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@theme {
+    --font-outfit: 'Outfit', sans-serif;
+
+    --color-primary-teal: #007e6e;
+}

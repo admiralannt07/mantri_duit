@@ -45,7 +45,7 @@ def dashboard(request):
         'current_balance': current_balance,
         'status': status
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard/dashboard.html', context)
 
 # View untuk Input Manual (Pemasukan/Pengeluaran tanpa scan)
 @login_required(login_url='/login/')
@@ -87,7 +87,7 @@ def add_transaction_manual(request):
 
         return redirect('dashboard')
         
-    return render(request, 'manual_input.html')
+    return render(request, 'dashboard/manual_input.html')
 
 @login_required(login_url='/login/')
 def scan_receipt(request):
@@ -135,7 +135,7 @@ def scan_receipt(request):
     else:
         form = ReceiptForm()
 
-    return render(request, 'scan.html', {'form': form})
+    return render(request, 'dashboard/scan.html', {'form': form})
 
 @login_required(login_url='/login/')
 def chat_page(request):
@@ -153,7 +153,7 @@ def chat_page(request):
         'chats': chats,
         'current_balance': current_balance # Lempar ke template chat.html
     }
-    return render(request, 'chat.html', context)
+    return render(request, 'dashboard/chat.html', context)
 
 @login_required(login_url='/login/')
 def chat_api(request):
@@ -169,7 +169,7 @@ def chat_api(request):
         ai_response = service.ask_mantri(user_message)
         
         # Kembalikan HTML Bubble Chat (User + AI)
-        return render(request, 'partials/chat_bubble.html', {
+        return render(request, 'dashboard/chat_bubble.html', {
             'message': user_message, 
             'response': ai_response
         })
@@ -196,5 +196,59 @@ def register_view(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'auth/register.html', {'form': form})
+
+@login_required(login_url='/login/')
+def transaction_history(request):
+    """
+    Halaman history transaksi dengan filter dan search
+    """
+    transactions = Transaction.objects.filter(user=request.user).order_by('-transaction_date', '-created_at')
+    
+    # Filter berdasarkan tipe (IN/OUT)
+    transaction_type = request.GET.get('type')
+    if transaction_type in ['IN', 'OUT']:
+        transactions = transactions.filter(type=transaction_type)
+    
+    # Filter berdasarkan kategori
+    category = request.GET.get('category')
+    if category:
+        transactions = transactions.filter(category=category)
+    
+    # Filter berdasarkan tanggal
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    if date_from:
+        transactions = transactions.filter(transaction_date__gte=date_from)
+    if date_to:
+        transactions = transactions.filter(transaction_date__lte=date_to)
+    
+    # Search berdasarkan merchant name atau description
+    search_query = request.GET.get('search')
+    if search_query:
+        transactions = transactions.filter(
+            merchant_name__icontains=search_query
+        ) | transactions.filter(
+            description__icontains=search_query
+        )
+    
+    # Hitung total berdasarkan filter
+    total_income = transactions.filter(type='IN').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    total_expense = transactions.filter(type='OUT').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    
+    # Ambil semua kategori unik untuk filter dropdown
+    categories = Transaction.objects.filter(user=request.user).values_list('category', flat=True).distinct()
+    
+    context = {
+        'transactions': transactions,
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'categories': categories,
+        'current_type': transaction_type,
+        'current_category': category,
+        'current_search': search_query or '',
+        'date_from': date_from or '',
+        'date_to': date_to or '',
+    }
+    return render(request, 'dashboard/history.html', context)
 
