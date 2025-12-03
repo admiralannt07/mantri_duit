@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id" data-theme="corporate">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantri Duit</title>
+    <link rel="stylesheet" href="{% static 'dist/styles.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen text-slate-800 font-sans">
+
+    <nav class="navbar bg-base-100 shadow-sm mb-8">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl text-primary font-bold">Mantri Duit 💸</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pb-20">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+
+</html>
