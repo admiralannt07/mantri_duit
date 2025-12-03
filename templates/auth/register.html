@@ -1,0 +1,229 @@
+{% extends 'layout/base.html' %} {% block layout %}
+<div
+  class="min-h-screen w-full flex items-center justify-center bg-slate-100 p-4 font-poppins relative overflow-hidden"
+>
+  <div
+    class="absolute inset-0 z-0 pointer-events-none"
+    style="
+      background-size: 40px 40px;
+      background-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.03) 1px,
+          transparent 1px
+        ),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    "
+  ></div>
+
+  <div
+    class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-teal-100 blur-[100px] opacity-60 -z-10 pointer-events-none"
+  ></div>
+  <div
+    class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-100 blur-[100px] opacity-50 -z-10 pointer-events-none"
+  ></div>
+  <nav class="absolute top-0 left-0 w-full p-6 sm:p-8 flex items-center z-50">
+    <a
+      href="/"
+      class="btn btn-sm btn-ghost text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm rounded-lg gap-2 normal-case font-medium"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+      Kembali
+    </a>
+  </nav>
+
+  <div
+    class="w-full max-w-5xl h-auto min-h-[600px] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100 mx-4 z-10 relative my-20 md:my-0"
+  >
+    <div
+      class="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center relative bg-white"
+    >
+      <div class="w-full max-w-sm mx-auto mt-8">
+        <div class="absolute top-8 right-5 md:left-12 flex items-center gap-2">
+          <a
+            href="/"
+            class="btn btn-ghost hover:bg-transparent px-0 normal-case text-xl flex items-center gap-2 group"
+          >
+            <div
+              class="w-9 h-9 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm group-hover:bg-teal-700 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
+              </svg>
+            </div>
+            <span
+              class="font-montserrat font-bold text-slate-800 text-lg tracking-tight"
+            >
+              Mantri <span class="text-teal-600">Duit</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="text-left mb-8">
+          <h1
+            class="text-4xl font-bold text-slate-900 mb-3 tracking-tight leading-[1.2]"
+          >
+            Mulai Jadi<br />Juragan 🚀
+          </h1>
+          <p class="text-slate-500 text-sm font-medium">
+            Bergabung dengan ribuan UMKM sukses lainnya.
+          </p>
+        </div>
+
+        <form method="post" class="space-y-4">
+          {% csrf_token %} {% for field in form %}
+          <div class="form-control w-full">
+            <label class="label pl-0 pb-1.5" for="{{ field.id_for_label }}">
+              <span
+                class="label-text text-slate-600 font-bold text-xs uppercase tracking-wider"
+              >
+                {{ field.label }} {% if field.field.required %}<span
+                  class="text-red-500 ml-0.5"
+                  >*</span
+                >{% endif %}
+              </span>
+            </label>
+
+            <div class="relative">
+              <input
+                type="{{ field.field.widget.input_type }}"
+                name="{{ field.name }}"
+                id="{{ field.id_for_label }}"
+                placeholder="{{ field.label }} Anda"
+                class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 bg-white text-slate-800 text-sm font-medium placeholder-slate-400 focus:outline-none focus:border-primary-teal/30 focus:ring-0 transition-all {% if field.errors %}border-red-500 focus:border-red-500{% endif %}"
+                {%
+                if
+                field.field.required
+                %}required{%
+                endif
+                %}
+              />
+
+              {% if field.errors %}
+              <div
+                class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-red-500"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              {% endif %}
+            </div>
+
+            {% for error in field.errors %}
+            <span
+              class="text-xs text-red-500 mt-1.5 px-1 flex items-center gap-1 font-medium animate-pulse"
+            >
+              {{ error }}
+            </span>
+            {% endfor %}
+          </div>
+          {% endfor %} {% if form.non_field_errors %}
+          <div
+            class="alert alert-error text-xs p-3 bg-red-50 border border-red-100 text-red-500 rounded-xl mt-4 flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-current shrink-0 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div class="flex flex-col">
+              {% for error in form.non_field_errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="pt-4">
+            <button
+              type="submit"
+              class="w-full py-4 rounded-xl bg-primary-teal/70 hover:bg-primary-teal/90 text-white font-bold text-sm shadow-lg shadow-primary-teal/30 transition-all transform active:scale-[0.98]"
+            >
+              Daftar Sekarang
+            </button>
+          </div>
+        </form>
+
+        <p class="text-center text-xs text-slate-400 mt-6 font-medium">
+          Sudah punya akun?
+          <a
+            href="{% url 'login' %}"
+            class="text-primary-teal hover:text-primary-teal/70 font-bold ml-1 transition-colors"
+            >Login aja</a
+          >
+        </p>
+      </div>
+
+      <div class="mt-8 text-center text-[10px] text-slate-400 w-full md:hidden">
+        Dengan mendaftar, Anda menyetujui
+        <a href="#" class="underline hover:text-indigo-600">S&K</a> kami.
+      </div>
+    </div>
+
+    <div
+      class="hidden md:flex md:w-1/2 bg-gray-200 relative items-center justify-center p-12 overflow-hidden"
+    >
+      <img
+        src="https://cdni.iconscout.com/illustration/premium/thumb/sign-up-8694031-6983270.png"
+        alt="Register Illustration"
+        class="relative z-10 w-full max-w-md object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+      />
+
+      <div
+        class="absolute bottom-6 right-8 text-[10px] text-slate-100 md:text-white text-right hidden md:block opacity-80"
+      >
+        Dengan mendaftar, Anda menyetujui
+        <a href="#" class="underline hover:text-white">Syarat & Ketentuan</a>
+        kami.
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="absolute bottom-4 text-[10px] text-slate-400 text-center w-full md:hidden"
+  >
+    &copy; 2025 Mantri Duit. All rights reserved.
+  </div>
+</div>
+{% endblock %}

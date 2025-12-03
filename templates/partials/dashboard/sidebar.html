@@ -1,0 +1,228 @@
+{% load static %}
+<aside
+  class="w-72 h-screen bg-white text-slate-600 flex flex-col border-r border-slate-100 font-poppins transition-all duration-300 group/sidebar hover:w-72"
+  id="sidebar"
+>
+  <div
+    class="h-20 flex-none flex items-center gap-3 px-8 border-b border-slate-50 justify-between sidebar-header"
+  >
+    <div class="flex items-center gap-3 overflow-hidden logo-container">
+      <div
+        class="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-teal-100 transition-transform hover:scale-105 shrink-0"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+          ></path>
+        </svg>
+      </div>
+      <span
+        class="font-montserrat font-bold text-xl text-slate-800 tracking-tight whitespace-nowrap sidebar-text"
+      >
+        Mantri <span class="text-teal-600">Duit</span>
+      </span>
+    </div>
+    <button
+      onclick="toggleSidebar()"
+      class="btn btn-ghost btn-sm btn-circle text-slate-400 hover:text-teal-600 hover:bg-teal-50 shrink-0 sidebar-toggle"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <ul
+    class="menu flex-1 px-4 gap-1.5 text-sm font-medium text-slate-500 overflow-y-auto"
+    id="sidebar-menu" hx-swap-oob="true"
+    hx-boost="true" hx-target="#main-content" hx-select="#main-content" hx-swap="innerHTML"
+  >
+    <li
+      class="menu-title px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 sidebar-text"
+    >
+      Menu Utama
+    </li>
+
+    <li>
+      <a
+        href="{% url 'dashboard' %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if request.path == '/dashboard/' %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+        title="Ringkasan"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+          />
+        </svg>
+        <span class="sidebar-text whitespace-nowrap">Ringkasan</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="{% url 'chat_page' %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group {% if 'chat' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+        title="Tanya Mantri"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+          />
+        </svg>
+        <span class="sidebar-text whitespace-nowrap">Tanya Mantri</span>
+        <span
+          class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full border sidebar-text {% if 'chat' in request.path %}bg-white text-teal-600 border-white{% else %}bg-indigo-50 text-indigo-600 border-indigo-100{% endif %}"
+        >
+          AI
+        </span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="{% url 'scan_receipt' %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if 'scan' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+        title="Scan Nota"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        <span class="sidebar-text whitespace-nowrap">Scan Nota</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="{% url 'add_manual' %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if '/add/' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          />
+        </svg>
+
+        <span class="sidebar-text whitespace-nowrap">Input Manual</span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="{% url 'transaction_history' %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if '/history/' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+        title="History"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span class="sidebar-text whitespace-nowrap">History</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="p-6 border-t border-slate-50 flex-none sidebar-footer">
+    <a
+      href="{% url 'logout' %}"
+      class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 font-medium transition-all hover:bg-red-50 hover:text-red-600 w-full group logout-btn"
+      title="Keluar Aplikasi"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 group-hover:-translate-x-1 transition-transform shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+      </svg>
+      <span class="sidebar-text whitespace-nowrap">Keluar Aplikasi</span>
+    </a>
+    <div class="mt-4 text-center sidebar-text">
+      <p class="text-[10px] text-slate-400 font-medium">
+        Mantri Duit v1.0 • &copy; 2025
+      </p>
+    </div>
+  </div>
+</aside>
+
+<script src="{% static 'js/sidebar.js' %}"></script>
