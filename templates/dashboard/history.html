@@ -1,0 +1,281 @@
+{% extends 'layout/base-dashboard.html' %}
+{% load humanize %}
+
+{% block title %}Riwayat Transaksi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">Riwayat Transaksi</h1>
+        <p class="text-slate-500 text-sm">Kelola dan pantau semua transaksi keuangan Anda</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m7 7l-7-7-7 7" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Total Pemasukan</p>
+                    <p class="text-lg font-bold text-teal-600">Rp {{ total_income|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Total Pengeluaran</p>
+                    <p class="text-lg font-bold text-red-600">Rp {{ total_expense|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Total Transaksi</p>
+                    <p class="text-lg font-bold text-slate-800">{{ transactions.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Section -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm mb-6">
+        <form method="GET" id="filterForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Search -->
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-2 block">Cari Transaksi</label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            name="search"
+                            id="searchInput"
+                            placeholder="Nama toko atau deskripsi..."
+                            value="{{ current_search }}"
+                            class="input input-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm pl-10"
+                            onkeyup="filterTransactionsRealtime()"
+                        />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Type Filter -->
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-2 block">Tipe Transaksi</label>
+                    <select name="type" class="select select-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm">
+                        <option value="">Semua Tipe</option>
+                        <option value="IN" {% if current_type == 'IN' %}selected{% endif %}>Pemasukan</option>
+                        <option value="OUT" {% if current_type == 'OUT' %}selected{% endif %}>Pengeluaran</option>
+                    </select>
+                </div>
+
+                <!-- Category Filter -->
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-2 block">Kategori</label>
+                    <select name="category" class="select select-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm">
+                        <option value="">Semua Kategori</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Date From -->
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-2 block">Dari Tanggal</label>
+                    <input
+                        type="date"
+                        name="date_from"
+                        value="{{ date_from }}"
+                        class="input input-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm"
+                    />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Date To -->
+                <div>
+                    <label class="text-xs font-bold text-slate-600 mb-2 block">Sampai Tanggal</label>
+                    <input
+                        type="date"
+                        name="date_to"
+                        value="{{ date_to }}"
+                        class="input input-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm"
+                    />
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-end gap-2 md:col-span-3">
+                    <button type="submit" class="btn bg-teal-600 hover:bg-teal-700 text-white border-none rounded-xl flex-1 md:flex-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Filter
+                    </button>
+                    <a href="{% url 'transaction_history' %}" class="btn btn-ghost border border-slate-200 rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        {% if transactions %}
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="text-xs font-bold text-slate-600 uppercase">Tanggal</th>
+                            <th class="text-xs font-bold text-slate-600 uppercase">Toko/Deskripsi</th>
+                            <th class="text-xs font-bold text-slate-600 uppercase">Kategori</th>
+                            <th class="text-xs font-bold text-slate-600 uppercase">Tipe</th>
+                            <th class="text-xs font-bold text-slate-600 uppercase text-right">Jumlah</th>
+                            <th class="text-xs font-bold text-slate-600 uppercase">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTableBody">
+                        {% for t in transactions %}
+                        <tr class="hover:bg-slate-50 transition-colors transaction-row" 
+                            data-merchant="{{ t.merchant_name|default:t.description|lower }}"
+                            data-description="{{ t.description|lower }}"
+                            data-category="{{ t.category|lower }}">
+                            <td class="text-sm">
+                                <div class="font-medium text-slate-800">{{ t.transaction_date|date:"d M Y" }}</div>
+                                <div class="text-xs text-slate-400">{{ t.created_at|date:"H:i" }}</div>
+                            </td>
+                            <td class="text-sm">
+                                <div class="font-bold text-slate-800">{{ t.merchant_name|default:t.description }}</div>
+                                {% if t.description and t.merchant_name != t.description %}
+                                    <div class="text-xs text-slate-400">{{ t.description|truncatewords:10 }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-sm bg-slate-100 text-slate-600 border-none rounded-lg">{{ t.category }}</span>
+                            </td>
+                            <td>
+                                {% if t.type == 'IN' %}
+                                    <span class="badge badge-sm bg-teal-50 text-teal-600 border-teal-200 rounded-lg">Masuk</span>
+                                {% else %}
+                                    <span class="badge badge-sm bg-red-50 text-red-600 border-red-200 rounded-lg">Keluar</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                <span class="font-bold {% if t.type == 'IN' %}text-teal-600{% else %}text-red-600{% endif %}">
+                                    {% if t.type == 'IN' %}+{% else %}-{% endif %} Rp {{ t.total_amount|intcomma }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if t.receipt_image %}
+                                    <button onclick="showImageModal('{{ t.receipt_image.url }}')" class="btn btn-ghost btn-sm btn-circle text-slate-400 hover:text-teal-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                {% else %}
+                                    <span class="text-slate-300 text-xs">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Results Message (Hidden by default) -->
+            <div id="noResults" class="hidden flex-col items-center justify-center py-16 text-center">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                    <span class="text-4xl">🔍</span>
+                </div>
+                <p class="text-slate-900 font-bold text-lg mb-1">Tidak ditemukan</p>
+                <p class="text-slate-400 text-sm">Coba kata kunci atau filter lain</p>
+            </div>
+        {% else %}
+            <div class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                    <span class="text-4xl grayscale opacity-50">📋</span>
+                </div>
+                <p class="text-slate-900 font-bold text-lg mb-1">Tidak ada transaksi</p>
+                <p class="text-slate-400 text-sm">Coba ubah filter atau tambah transaksi baru</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal for Receipt Image -->
+<dialog id="imageModal" class="modal">
+    <div class="modal-box max-w-2xl">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg mb-4">Foto Nota</h3>
+        <img id="modalImage" src="" alt="Receipt" class="w-full rounded-xl">
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<script>
+    function filterTransactionsRealtime() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('.transaction-row');
+        const noResults = document.getElementById('noResults');
+        const tableBody = document.getElementById('transactionTableBody');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const merchant = row.getAttribute('data-merchant');
+            const description = row.getAttribute('data-description');
+            const category = row.getAttribute('data-category');
+            
+            if (merchant.includes(searchInput) || 
+                description.includes(searchInput) || 
+                category.includes(searchInput)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        if (visibleCount === 0) {
+            tableBody.style.display = 'none';
+            noResults.style.display = 'flex';
+        } else {
+            tableBody.style.display = '';
+            noResults.style.display = 'none';
+        }
+    }
+
+    function showImageModal(imageUrl) {
+        document.getElementById('modalImage').src = imageUrl;
+        document.getElementById('imageModal').showModal();
+    }
+</script>
+{% endblock %}

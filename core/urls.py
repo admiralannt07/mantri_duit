@@ -7,21 +7,22 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     # AUTHENTICATION ROUTES
     # 1. Login (Pakai view bawaan Django, tapi kita kasih template sendiri)
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'), name='login'),
     
     # 2. Logout (Kita buat view custom biar simpel redirectnya)
     path('logout/', views.logout_view, name='logout'),
     
     # 3. Register (Kita butuh view khusus)
-    path('register/', views.register_view, name='register'),
+    path('auth/register/', views.register_view, name='register'),
 
     # 4. Scan Receipt
-    path('scan/', views.scan_receipt, name='scan_receipt'),
+    path('dashboard/scan/', views.scan_receipt, name='scan_receipt'),
 
     # 5. Input Manual
-    path('add/', views.add_transaction_manual, name='add_manual'),
+    path('dashboard/add/', views.add_transaction_manual, name='add_manual'),
 
     # 6. Chat
-    path('chat/', views.chat_page, name='chat_page'),
+    path('dashboard/chat/', views.chat_page, name='chat_page'),
     path('api/chat/', views.chat_api, name='chat_api'), 
+    path('history/', views.transaction_history, name='transaction_history'),
 ]

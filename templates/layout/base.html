@@ -1,18 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="id" data-theme="corporate" class="scroll-smooth">
+<html lang="id" data-theme="emerald" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mantri Duit</title>
-
-    <!-- Google Fonts: Montserrat (Headings) & Poppins (Body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <title>{% block title %}Mantri Duit{% endblock %}</title>
 
     <!-- Tailwind CSS v4 + DaisyUI -->
     <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
@@ -24,23 +16,10 @@
     <link rel="stylesheet" href="{% static 'src/input.css' %}" />
   </head>
 
-  <body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
-    <!-- Navigation Header -->
-    {% include 'partials/navbar.html' %}
-
-    <!-- Main Content Area - Mobile-First Responsive -->
-    <main
-      class="grow container mx-auto px-4 py-6 max-w-md md:max-w-2xl lg:max-w-6xl"
-    >
-      {% block content %} {% endblock %}
-    </main>
-
-    <!-- Footer -->
-    {% include 'partials/footer.html' %} 
-    
+  <body class="bg-slate-50 min-h-screen text-slate-800 font-outfit">
     {% if messages %}
     <div
-      class="toast toast-bottom toast-center sm:toast-end z-[100] mb-4 sm:mb-8 mr-0 sm:mr-6 w-full max-w-[90vw] sm:max-w-md px-2 sm:px-0 space-y-3"
+      class="toast toast-bottom toast-center sm:toast-end z-[9999] mb-4 sm:mb-8 mr-0 sm:mr-6 w-full max-w-[90vw] sm:max-w-md px-2 sm:px-0 space-y-3 fixed"
     >
       {% for message in messages %} {% with tag=message.tags %}
       <div
@@ -115,7 +94,6 @@
             {% if tag == 'error' %}HEH! SALAH ITU! 😤 
             {% elif tag == 'warning' %}WASPADA BOS! ⚠️ {% else %}MANTAP JIWA! 💸{% endif %}
           </h3>
-
           <p
             class="font-poppins text-sm text-slate-600 leading-snug break-words"
           >
@@ -149,15 +127,16 @@
       document.addEventListener("DOMContentLoaded", function () {
         const toasts = document.querySelectorAll(".toast > div");
         toasts.forEach((toast, index) => {
-          // Delay bertingkat jika ada banyak notif
           setTimeout(() => {
             toast.style.opacity = "0";
-            toast.style.transform = "translateX(100px)"; // Geser ke kanan saat hilang
+            toast.style.transform = "translateX(100px)";
             setTimeout(() => toast.remove(), 500);
-          }, 5000 + index * 1000); // Hilang setelah 5 detik
+          }, 5000 + index * 1000);
         });
       });
     </script>
     {% endif %}
+
+    <main>{% block layout %}{% endblock %}</main>
   </body>
 </html>

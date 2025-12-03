@@ -1,36 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-:root {
-  --font-heading: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-  /* Emerald Theme - Primary Palette */
-  --color-primary-50: #f0fdf4;
-  --color-primary-100: #dcfce7;
-  --color-primary-200: #bbf7d0;
-  --color-primary-300: #86efac;
-  --color-primary-400: #4ade80;
-  --color-primary-500: #22c55e;
-  --color-primary-600: #16a34a;
-  --color-primary-700: #15803d;
+@theme {
+    --font-outfit: 'Outfit', sans-serif;
 
-  /* Orange/Coral Theme - Secondary Palette */
-  --color-secondary-50: #fff7ed;
-  --color-secondary-100: #fee2e2;
-  --color-secondary-200: #fecaca;
-  --color-secondary-300: #fca5a5;
-  --color-secondary-400: #f87171;
-  --color-secondary-500: #ef4444;
-  --color-secondary-600: #dc2626;
-
-  /* Neutral Palette */
-  --color-neutral-50: #f9fafb;
-  --color-neutral-100: #f3f4f6;
-  --color-neutral-200: #e5e7eb;
-  --color-neutral-300: #d1d5db;
-  --color-neutral-400: #9ca3af;
-  --color-neutral-500: #6b7280;
-  --color-neutral-600: #4b5563;
-  --color-neutral-700: #374151;
+    --color-primary-teal: #007e6e;
 }
