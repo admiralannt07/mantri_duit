@@ -25,4 +25,6 @@ urlpatterns = [
     path('dashboard/chat/', views.chat_page, name='chat_page'),
     path('api/chat/', views.chat_api, name='chat_api'), 
     path('history/', views.transaction_history, name='transaction_history'),
+    path('dashboard/profile/', views.profile_settings, name='profile_settings'),
+    path('dashboard/settings/', views.settings_page, name='settings_page'),
 ]

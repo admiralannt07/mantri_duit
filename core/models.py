@@ -44,3 +44,11 @@ class ChatHistory(models.Model):
 
     def __str__(self):
         return f"Chat by {self.user.username} at {self.timestamp}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    business_name = models.CharField(max_length=100, default="Usaha Tanpa Nama", verbose_name="Nama Usaha")
+    business_description = models.TextField(default="Pedagang umum", verbose_name="Deskripsi Usaha")
+    
+    def __str__(self):
+        return f"Profil Bisnis: {self.user.username}"

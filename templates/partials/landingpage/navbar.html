@@ -29,7 +29,7 @@
           </div>
           <ul
             tabindex="0"
-            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-white rounded-xl w-52 border border-slate-100 text-slate-600 font-poppins"
+            class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow-lg bg-white rounded-xl w-52 border border-slate-100 text-slate-600 font-poppins"
           >
             <li><a href="#hero">Beranda</a></li>
             <li><a href="#fitur">Fitur</a></li>
@@ -141,7 +141,7 @@
             class="btn btn-ghost btn-circle avatar ring ring-transparent hover:ring-teal-200 transition-all duration-300 ml-1"
           >
             <div
-              class="w-10 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-montserrat font-bold text-sm shadow-md"
+              class="w-10 rounded-full bg-linear-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-montserrat font-bold text-sm shadow-md"
             >
               {{ user.username|slice:":2"|upper }}
             </div>
@@ -149,7 +149,7 @@
 
           <ul
             tabindex="0"
-            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-xl bg-white rounded-xl w-56 border border-slate-100 font-poppins"
+            class="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow-xl bg-white rounded-xl w-56 border border-slate-100 font-poppins"
           >
             <li class="menu-title px-4 py-2 border-b border-slate-100 mb-2">
               <span class="text-slate-900 font-bold block truncate"
@@ -172,7 +172,7 @@
         {% else %}
         <a
           href="/login"
-          class="btn bg-teal-600 hover:bg-teal-700 text-white border-none font-montserrat font-semibold rounded-lg shadow-md px-6 min-h-[2.5rem] h-[2.5rem]"
+          class="btn bg-teal-600 hover:bg-teal-700 text-white border-none font-montserrat font-semibold rounded-lg shadow-md px-6 min-h-10 h-10"
         >
           Masuk
         </a>

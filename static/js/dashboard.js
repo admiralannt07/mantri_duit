@@ -59,3 +59,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
     dateInput.valueAsDate = new Date();
   }
 });
+
+// Fungsi Show Loading untuk Manual Input
+window.showManualInputLoading = function() {
+  console.log("showManualInputLoading called");
+  const form = document.querySelector("form");
+  
+  // Cek validasi form HTML5 (required, type, dll)
+  if (form && !form.checkValidity()) {
+    console.log("Form is invalid");
+    // Biarkan browser menampilkan pesan error bawaan
+    return;
+  }
+
+  const overlay = document.getElementById("loadingOverlayManualInput");
+  if (overlay) {
+    overlay.classList.remove("hidden");
+    overlay.classList.add("flex");
+  } else {
+    console.error("loadingOverlayManualInput not found");
+  }
+};

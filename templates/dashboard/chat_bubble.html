@@ -1,10 +1,13 @@
+{% load markdown_extras %} {% if message %}
 <div class="chat chat-end relative z-10 animate-fade-in-up">
     <div class="chat-bubble bg-teal-600 text-white shadow-md shadow-teal-100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl">
         <p>{{ message }}</p>
     </div>
     <div class="chat-footer opacity-50 text-xs mt-1 mr-1">Anda</div>
 </div>
+{% endif %}
 
+{% if response %}
 <div class="chat chat-start relative z-10 animate-fade-in-up delay-75">
     <div class="chat-image avatar hidden sm:block">
         <div class="w-10 rounded-full bg-teal-100 text-xl flex items-center justify-center">🤖</div>
@@ -12,7 +15,8 @@
     <div class="chat-bubble bg-white text-slate-700 shadow-sm border border-slate-100 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
         <p class="font-bold text-teal-600 text-xs mb-1">Mantri Galak</p>
         <div class="prose prose-sm max-w-none text-slate-600 leading-relaxed">
-            {{ response|safe }}
+            {{ response|markdown|safe }}
         </div>
     </div>
 </div>
+{% endif %}

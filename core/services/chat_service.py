@@ -24,13 +24,22 @@ class ChatService:
         # RETURN 3 VARIABLE: Balance, Income, dan History String
         return balance, income, trans_str
 
+    def get_business_context(self):
+        # FITUR BARU: Ambil deskripsi usaha
+        try:
+            profile = self.user.profile
+            return f"Nama Usaha: {profile.business_name}\nDeskripsi: {profile.business_description}"
+        except UserProfile.DoesNotExist:
+            return "User belum setting profil usaha. Anggap saja usaha serabutan/umum."
+
     def ask_mantri(self, user_message):
         # 1. Siapkan Data (Unpack 3 variable)
         balance, income, trans_str = self.get_financial_context()
+        business_ctx = self.get_business_context()
         
-        # 2. Rakit Prompt (Kirim income juga ke prompt generator)
+        # 2. Rakit Prompt (Kirim income dan business context juga ke prompt generator)
         # Format angka pake k koma separator biar AI gampang baca
-        system_prompt = get_system_prompt(self.user.username, f"{balance:,}", f"{income:,}", trans_str)
+        system_prompt = get_system_prompt(self.user.username, f"{balance:,}", f"{income:,}", trans_str, business_ctx)
         
         # 3. Kirim ke Gemini
         full_prompt = f"{system_prompt}\n\nUser bertanya: {user_message}\nJawab:"

@@ -7,8 +7,8 @@
 <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800 mb-2">Riwayat Transaksi</h1>
-        <p class="text-slate-500 text-sm">Kelola dan pantau semua transaksi keuangan Anda</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Riwayat Transaksi</h1>
+        <p class="text-slate-500 text-sm md:text-base">Kelola dan pantau semua transaksi keuangan Anda</p>
     </div>
 
     <!-- Summary Cards -->
@@ -21,8 +21,8 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-400 font-medium">Total Pemasukan</p>
-                    <p class="text-lg font-bold text-teal-600">Rp {{ total_income|intcomma }}</p>
+                    <p class="text-xs md:text-sm text-slate-400 font-medium">Total Pemasukan</p>
+                    <p class="text-lg md:text-xl font-bold text-teal-600">Rp {{ total_income|intcomma }}</p>
                 </div>
             </div>
         </div>
@@ -35,8 +35,8 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-400 font-medium">Total Pengeluaran</p>
-                    <p class="text-lg font-bold text-red-600">Rp {{ total_expense|intcomma }}</p>
+                    <p class="text-xs md:text-sm text-slate-400 font-medium">Total Pengeluaran</p>
+                    <p class="text-lg md:text-xl font-bold text-red-600">Rp {{ total_expense|intcomma }}</p>
                 </div>
             </div>
         </div>
@@ -49,8 +49,8 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs text-slate-400 font-medium">Total Transaksi</p>
-                    <p class="text-lg font-bold text-slate-800">{{ transactions.count }}</p>
+                    <p class="text-xs md:text-sm text-slate-400 font-medium">Total Transaksi</p>
+                    <p class="text-lg md:text-xl font-bold text-slate-800">{{ transactions.paginator.count|default:transactions.count }}</p>
                 </div>
             </div>
         </div>
@@ -58,11 +58,11 @@
 
     <!-- Filter & Search Section -->
     <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm mb-6">
-        <form method="GET" id="filterForm" class="space-y-4">
+        <form method="GET" id="filterForm" class="space-y-4" hx-get="{% url 'transaction_history' %}" hx-target="#main-content" hx-select="#main-content" hx-swap="innerHTML" hx-push-url="true">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Search -->
                 <div>
-                    <label class="text-xs font-bold text-slate-600 mb-2 block">Cari Transaksi</label>
+                    <label class="text-xs md:text-sm font-bold text-slate-600 mb-2 block">Cari Transaksi</label>
                     <div class="relative">
                         <input
                             type="text"
@@ -81,7 +81,7 @@
 
                 <!-- Type Filter -->
                 <div>
-                    <label class="text-xs font-bold text-slate-600 mb-2 block">Tipe Transaksi</label>
+                    <label class="text-xs md:text-sm font-bold text-slate-600 mb-2 block">Tipe Transaksi</label>
                     <select name="type" class="select select-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm">
                         <option value="">Semua Tipe</option>
                         <option value="IN" {% if current_type == 'IN' %}selected{% endif %}>Pemasukan</option>
@@ -91,7 +91,7 @@
 
                 <!-- Category Filter -->
                 <div>
-                    <label class="text-xs font-bold text-slate-600 mb-2 block">Kategori</label>
+                    <label class="text-xs md:text-sm font-bold text-slate-600 mb-2 block">Kategori</label>
                     <select name="category" class="select select-bordered w-full rounded-xl border-slate-200 focus:border-teal-500 text-sm">
                         <option value="">Semua Kategori</option>
                         {% for cat in categories %}
@@ -102,7 +102,7 @@
 
                 <!-- Date From -->
                 <div>
-                    <label class="text-xs font-bold text-slate-600 mb-2 block">Dari Tanggal</label>
+                    <label class="text-xs md:text-sm font-bold text-slate-600 mb-2 block">Dari Tanggal</label>
                     <input
                         type="date"
                         name="date_from"
@@ -115,7 +115,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <!-- Date To -->
                 <div>
-                    <label class="text-xs font-bold text-slate-600 mb-2 block">Sampai Tanggal</label>
+                    <label class="text-xs md:text-sm font-bold text-slate-600 mb-2 block">Sampai Tanggal</label>
                     <input
                         type="date"
                         name="date_to"
@@ -150,12 +150,12 @@
                 <table class="table w-full">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="text-xs font-bold text-slate-600 uppercase">Tanggal</th>
-                            <th class="text-xs font-bold text-slate-600 uppercase">Toko/Deskripsi</th>
-                            <th class="text-xs font-bold text-slate-600 uppercase">Kategori</th>
-                            <th class="text-xs font-bold text-slate-600 uppercase">Tipe</th>
-                            <th class="text-xs font-bold text-slate-600 uppercase text-right">Jumlah</th>
-                            <th class="text-xs font-bold text-slate-600 uppercase">Nota</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Tanggal</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Toko/Deskripsi</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Kategori</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Tipe</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase text-right">Jumlah</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Nota</th>
                         </tr>
                     </thead>
                     <tbody id="transactionTableBody">
@@ -164,14 +164,14 @@
                             data-merchant="{{ t.merchant_name|default:t.description|lower }}"
                             data-description="{{ t.description|lower }}"
                             data-category="{{ t.category|lower }}">
-                            <td class="text-sm">
+                            <td class="text-sm md:text-base">
                                 <div class="font-medium text-slate-800">{{ t.transaction_date|date:"d M Y" }}</div>
-                                <div class="text-xs text-slate-400">{{ t.created_at|date:"H:i" }}</div>
+                                <div class="text-xs md:text-sm text-slate-400">{{ t.created_at|date:"H:i" }}</div>
                             </td>
-                            <td class="text-sm">
+                            <td class="text-sm md:text-base">
                                 <div class="font-bold text-slate-800">{{ t.merchant_name|default:t.description }}</div>
                                 {% if t.description and t.merchant_name != t.description %}
-                                    <div class="text-xs text-slate-400">{{ t.description|truncatewords:10 }}</div>
+                                    <div class="text-xs md:text-sm text-slate-400">{{ t.description|truncatewords:10 }}</div>
                                 {% endif %}
                             </td>
                             <td>
@@ -185,7 +185,7 @@
                                 {% endif %}
                             </td>
                             <td class="text-right">
-                                <span class="font-bold {% if t.type == 'IN' %}text-teal-600{% else %}text-red-600{% endif %}">
+                                <span class="font-bold text-sm md:text-base {% if t.type == 'IN' %}text-teal-600{% else %}text-red-600{% endif %}">
                                     {% if t.type == 'IN' %}+{% else %}-{% endif %} Rp {{ t.total_amount|intcomma }}
                                 </span>
                             </td>
@@ -205,6 +205,30 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            {% if transactions.has_other_pages %}
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 border-t border-slate-100 bg-slate-50/50">
+                <div class="text-xs md:text-sm text-slate-500 text-center md:text-left">
+                    Menampilkan <span class="font-bold text-slate-700">{{ transactions.start_index }}</span> - <span class="font-bold text-slate-700">{{ transactions.end_index }}</span> dari <span class="font-bold text-slate-700">{{ transactions.paginator.count }}</span> transaksi
+                </div>
+                <div class="join shadow-sm">
+                    {% if transactions.has_previous %}
+                        <a hx-get="?page={{ transactions.previous_page_number }}&search={{ current_search }}&type={{ current_type }}&category={{ current_category }}&date_from={{ date_from }}&date_to={{ date_to }}" hx-target="#main-content" hx-select="#main-content" hx-swap="innerHTML" hx-push-url="true" class="join-item btn btn-sm bg-white border-slate-200 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 cursor-pointer">«</a>
+                    {% else %}
+                        <button class="join-item btn btn-sm bg-slate-50 border-slate-200 text-slate-300 cursor-not-allowed">«</button>
+                    {% endif %}
+
+                    <button class="join-item btn btn-sm bg-white border-slate-200 text-slate-600 font-medium pointer-events-none">Halaman {{ transactions.number }}</button>
+
+                    {% if transactions.has_next %}
+                        <a hx-get="?page={{ transactions.next_page_number }}&search={{ current_search }}&type={{ current_type }}&category={{ current_category }}&date_from={{ date_from }}&date_to={{ date_to }}" hx-target="#main-content" hx-select="#main-content" hx-swap="innerHTML" hx-push-url="true" class="join-item btn btn-sm bg-white border-slate-200 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 cursor-pointer">»</a>
+                    {% else %}
+                        <button class="join-item btn btn-sm bg-slate-50 border-slate-200 text-slate-300 cursor-not-allowed">»</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
 
             <!-- No Results Message (Hidden by default) -->
             <div id="noResults" class="hidden flex-col items-center justify-center py-16 text-center">

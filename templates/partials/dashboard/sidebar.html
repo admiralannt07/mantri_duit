@@ -4,11 +4,11 @@
   id="sidebar"
 >
   <div
-    class="h-20 flex-none flex items-center gap-3 px-8 border-b border-slate-50 justify-between"
+    class="h-20 flex-none flex items-center gap-3 px-8 border-b border-slate-50 justify-between sidebar-header"
   >
-    <div class="flex items-center gap-3 overflow-hidden">
+    <div class="flex items-center gap-3 overflow-hidden logo-container">
       <div
-        class="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-teal-100 transition-transform hover:scale-105 flex-shrink-0"
+        class="w-9 h-9 bg-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-teal-100 transition-transform hover:scale-105 shrink-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@
     </div>
     <button
       onclick="toggleSidebar()"
-      class="btn btn-ghost btn-sm btn-circle text-slate-400 hover:text-teal-600 hover:bg-teal-50 flex-shrink-0 sidebar-toggle"
+      class="btn btn-ghost btn-sm btn-circle text-slate-400 hover:text-teal-600 hover:bg-teal-50 shrink-0 sidebar-toggle"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -55,6 +55,8 @@
 
   <ul
     class="menu flex-1 px-4 gap-1.5 text-sm font-medium text-slate-500 overflow-y-auto"
+    id="sidebar-menu" hx-swap-oob="true"
+    hx-boost="true" hx-target="#main-content" hx-select="#main-content" hx-swap="innerHTML"
   >
     <li
       class="menu-title px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 sidebar-text"
@@ -70,7 +72,7 @@
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 flex-shrink-0"
+          class="h-5 w-5 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -94,7 +96,7 @@
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 flex-shrink-0"
+          class="h-5 w-5 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -118,12 +120,12 @@
     <li>
       <a
         href="{% url 'scan_receipt' %}"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-teal-600 transition-all duration-200"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if 'scan' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
         title="Scan Nota"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 flex-shrink-0"
+          class="h-5 w-5 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -147,11 +149,11 @@
     <li>
       <a
         href="{% url 'add_manual' %}"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if 'manual' in request.path %} bg-teal-600 text-white shadow-md shadow-teal-100 font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if '/add/' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
+          class="h-5 w-5 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -164,19 +166,19 @@
           />
         </svg>
 
-        <span>Input Manual</span>
+        <span class="sidebar-text whitespace-nowrap">Input Manual</span>
       </a>
     </li>
 
     <li>
       <a
         href="{% url 'transaction_history' %}"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-teal-600 transition-all duration-200 {% if 'history' in request.path %}bg-primary-teal text-white font-semibold{% endif %}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {% if '/history/' in request.path %} bg-primary-teal text-white font-semibold {% else %} hover:bg-slate-50 hover:text-teal-600 {% endif %}"
         title="History"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 flex-shrink-0"
+          class="h-5 w-5 shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -193,15 +195,15 @@
     </li>
   </ul>
 
-  <div class="p-6 border-t border-slate-50 flex-none">
+  <div class="p-6 border-t border-slate-50 flex-none sidebar-footer">
     <a
       href="{% url 'logout' %}"
-      class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 font-medium transition-all hover:bg-red-50 hover:text-red-600 w-full group"
+      class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 font-medium transition-all hover:bg-red-50 hover:text-red-600 w-full group logout-btn"
       title="Keluar Aplikasi"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 group-hover:-translate-x-1 transition-transform flex-shrink-0"
+        class="h-5 w-5 group-hover:-translate-x-1 transition-transform shrink-0"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

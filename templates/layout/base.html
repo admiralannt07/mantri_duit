@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Mantri Duit{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
 
     <!-- Tailwind CSS v4 + DaisyUI -->
     <link rel="stylesheet" href="{% static 'dist/styles.css' %}" />
@@ -12,20 +13,19 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-    <!-- Custom CSS untuk Design System Emerald Theme -->
-    <link rel="stylesheet" href="{% static 'src/input.css' %}" />
+
   </head>
 
-  <body class="bg-slate-50 min-h-screen text-slate-800 font-outfit">
+  <body class="bg-slate-50 min-h-screen text-slate-800 font-outfit" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% if messages %}
     <div
-      class="toast toast-bottom toast-center sm:toast-end z-[9999] mb-4 sm:mb-8 mr-0 sm:mr-6 w-full max-w-[90vw] sm:max-w-md px-2 sm:px-0 space-y-3 fixed"
+      class="toast toast-bottom toast-center sm:toast-end z-9999 mb-4 sm:mb-8 mr-0 sm:mr-6 w-full max-w-[90vw] sm:max-w-md px-2 sm:px-0 space-y-3 fixed"
     >
       {% for message in messages %} {% with tag=message.tags %}
       <div
         class="group flex items-start gap-4 p-4 rounded-xl shadow-2xl bg-white border border-slate-100 relative overflow-hidden transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg {% if tag == 'error' %} border-l-[6px] border-l-red-600 {% elif tag == 'warning' %} border-l-[6px] border-l-yellow-500 {% else %} border-l-[6px] border-l-emerald-500 {% endif %}"
       >
-        <div class="flex-shrink-0 mt-0.5">
+        <div class="shrink-0 mt-0.5">
           {% if tag == 'error' %}
           <div
             class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center animate-pulse"
@@ -95,7 +95,7 @@
             {% elif tag == 'warning' %}WASPADA BOS! ⚠️ {% else %}MANTAP JIWA! 💸{% endif %}
           </h3>
           <p
-            class="font-poppins text-sm text-slate-600 leading-snug break-words"
+            class="font-poppins text-sm text-slate-600 leading-snug wrap-break-words"
           >
             {{ message }}
           </p>
@@ -137,6 +137,9 @@
     </script>
     {% endif %}
 
-    <main>{% block layout %}{% endblock %}</main>
+    <main>
+      {% block layout %}
+      {% endblock %}
+    </main>
   </body>
 </html>
