@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-6">
+    <div class="card bg-base-100 shadow-xl border border-slate-100">
+        <div class="card-body">
+            <h2 class="card-title text-teal-700 flex justify-between">
+                Scan Nota
+                <span class="badge badge-primary badge-outline">AI Powered ✨</span>
+            </h2>
+            <p class="text-sm text-slate-500 mb-4">
+                Foto notamu dengan jelas. Biar Mantri yang ketik.
+            </p>
+
+            <form method="post" enctype="multipart/form-data" id="scanForm">
+                {% csrf_token %}
+                
+                <div class="form-control w-full mb-6">
+                    <label class="label">
+                        <span class="label-text">Upload Foto / Ambil Gambar</span>
+                    </label>
+                    {{ form.receipt_image }} 
+                </div>
+
+                <div class="card-actions justify-end">
+                    <a href="{% url 'dashboard' %}" class="btn btn-ghost">Batal</a>
+                    <button type="submit" class="btn btn-primary" onclick="showLoading()">
+                        Proses Nota 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="loadingOverlay" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl text-center">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <h3 class="text-lg font-bold mt-4 text-slate-800">Sedang Menerawang...</h3>
+        <p class="text-sm text-slate-500">Jangan tutup halaman ini ya.</p>
+    </div>
+</div>
+
+<script>
+    function showLoading() {
+        // Cek apakah user sudah pilih file
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput.files.length > 0) {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+    }
+</script>
+{% endblock %}

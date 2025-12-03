@@ -1,0 +1,174 @@
+{% extends 'base.html' %} {% block content %}
+<div class="flex min-h-screen bg-slate-950 text-slate-50">
+  <div
+    class="flex flex-col justify-center items-center w-full md:w-1/2 lg:w-2/5 p-8 md:p-12 lg:p-16 bg-slate-950"
+  >
+    <div class="w-full max-w-md space-y-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-white tracking-tight">
+          Mulai Jadi Juragan
+        </h2>
+        <p class="text-slate-400 mt-2 text-sm">
+          Bergabung dengan ribuan UMKM sukses lainnya.
+        </p>
+      </div>
+
+      <form method="post" class="space-y-5 mt-8">
+        {% csrf_token %} {% for field in form %}
+        <div class="form-control w-full">
+          <label class="label pb-1.5" for="{{ field.id_for_label }}">
+            <span class="label-text text-slate-200 font-medium text-sm">
+              {{ field.label }} {% if field.field.required %}<span
+                class="text-red-500"
+                >*</span
+              >{% endif %}
+            </span>
+          </label>
+
+          <input
+            type="{{ field.field.widget.input_type }}"
+            name="{{ field.name }}"
+            id="{{ field.id_for_label }}"
+            placeholder="Masukkan {{ field.label }}"
+            class="input input-bordered w-full bg-slate-900 border-slate-800 text-white placeholder-slate-500 focus:border-white/20 focus:ring-0 transition-all {% if field.errors %}border-red-500 focus:border-red-500{% endif %}"
+            {%
+            if
+            field.field.required
+            %}required{%
+            endif
+            %}
+          />
+
+          {% if field.help_text %}
+          <span class="text-xs text-slate-500 mt-1.5 px-1"
+            >{{ field.help_text|safe }}</span
+          >
+          {% endif %} {% for error in field.errors %}
+          <span
+            class="text-xs text-red-400 mt-1.5 px-1 flex items-center gap-1"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {{ error }}
+          </span>
+          {% endfor %}
+        </div>
+        {% endfor %} {% if form.non_field_errors %}
+        <div
+          class="alert alert-error bg-red-900/20 border border-red-900 text-red-200 text-sm p-3 rounded-lg"
+        >
+          <div class="flex flex-col">
+            {% for error in form.non_field_errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="btn btn-neutral w-full bg-white text-slate-950 hover:bg-slate-200 border-none font-medium h-12 text-base shadow-lg shadow-white/5"
+          >
+            Daftar Sekarang
+          </button>
+        </div>
+      </form>
+
+      <p class="text-center text-sm text-slate-400">
+        Sudah punya akun Mantri?
+        <a
+          href="{% url 'login' %}"
+          class="link link-hover text-white font-medium underline-offset-4"
+          >Login aja</a
+        >
+      </p>
+    </div>
+
+    <div
+      class="mt-auto pt-10 text-center text-xs text-slate-600 w-full max-w-md"
+    >
+      Dengan mendaftar, Anda menyetujui
+      <a href="#" class="underline hover:text-slate-400">Syarat & Ketentuan</a>
+      kami.
+    </div>
+  </div>
+
+  <div
+    class="hidden md:flex md:w-1/2 lg:w-3/5 bg-slate-900 items-center justify-center relative overflow-hidden border-l border-slate-900"
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-bl from-teal-900/40 via-slate-900/90 to-slate-950 z-10"
+    ></div>
+
+    <div
+      class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2664&auto=format&fit=crop')] bg-cover bg-center opacity-20 grayscale mix-blend-luminosity"
+    ></div>
+
+    <div class="relative z-20 text-center p-12 max-w-lg">
+      <div
+        class="w-16 h-16 bg-teal-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-teal-500/20 backdrop-blur-sm"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-teal-400"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+
+      <h3 class="text-2xl font-bold text-white mb-4">
+        Catat Rapi, Tidur Nyenyak.
+      </h3>
+      <p class="text-slate-400 text-lg leading-relaxed">
+        "Sejak pakai Mantri Duit, saya gak pernah pusing lagi mikirin uang modal
+        kepakai buat jajan. Semuanya tercatat otomatis!"
+      </p>
+      <div class="mt-6 flex items-center justify-center gap-3">
+        <div class="avatar-group -space-x-4 rtl:space-x-reverse">
+          <div class="avatar placeholder border-slate-800">
+            <div class="bg-teal-700 text-neutral-content w-8">
+              <span class="text-xs">U</span>
+            </div>
+          </div>
+          <div class="avatar placeholder border-slate-800">
+            <div class="bg-indigo-700 text-neutral-content w-8">
+              <span class="text-xs">M</span>
+            </div>
+          </div>
+          <div class="avatar placeholder border-slate-800">
+            <div class="bg-pink-700 text-neutral-content w-8">
+              <span class="text-xs">K</span>
+            </div>
+          </div>
+        </div>
+        <span class="text-xs text-slate-500 font-medium"
+          >Bergabung dengan 10k+ Juragan</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

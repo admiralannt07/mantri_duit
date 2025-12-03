@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="stats shadow w-full bg-linear-to-r from-slate-800 to-slate-700 text-white mb-6">
+  <div class="stat">
+    <div class="stat-title text-slate-300">Sisa Duit Usaha</div>
+    
+    <div class="stat-value text-3xl {% if current_balance < 0 %}text-red-400{% else %}text-emerald-400{% endif %}">
+        Rp {{ current_balance|intcomma }}
+    </div>
+    
+    <div class="stat-desc text-slate-300 mt-1">
+        Masuk: <span class="text-emerald-400 font-bold">Rp {{ total_income|intcomma }}</span> | 
+        Keluar: <span class="text-red-400 font-bold">Rp {{ total_expense|intcomma }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-4 mb-6">
+    <a href="{% url 'scan_receipt' %}" class="btn btn-primary h-auto py-4 flex flex-col gap-2 shadow-lg">
+        <span class="text-2xl">📸</span>
+        <span>Scan Nota<br><span class="text-xs font-normal">(Pengeluaran)</span></span>
+    </a>
+    
+    <a href="{% url 'add_manual' %}" class="btn btn-secondary h-auto py-4 flex flex-col gap-2 shadow-lg">
+        <span class="text-2xl">💰</span>
+        <span>Catat Omzet<br><span class="text-xs font-normal">(Pemasukan)</span></span>
+    </a>
+</div>
+
+<div class="flex justify-between items-center mb-4">
+    <h3 class="font-bold text-lg text-slate-700">Riwayat Keuangan</h3>
+</div>
+
+<div class="space-y-3 pb-24">
+    {% if transactions %}
+        {% for t in transactions %}
+        <div class="card card-side bg-base-100 shadow-sm border border-slate-100 p-2 compact">
+            <figure class="w-16 h-16 bg-slate-50 rounded-lg overflow-hidden ml-2 flex items-center justify-center text-2xl">
+                {% if t.receipt_image %}
+                    <img src="{{ t.receipt_image.url }}" class="object-cover w-full h-full" alt="Receipt">
+                {% else %}
+                    {% if t.type == 'IN' %}💰{% else %}💸{% endif %}
+                {% endif %}
+            </figure>
+            
+            <div class="card-body p-3 justify-center w-1/2">
+                <h4 class="card-title text-sm font-bold truncate">
+                    {{ t.merchant_name|default:t.description }}
+                </h4>
+                <p class="text-xs text-slate-500">
+                    {{ t.transaction_date|date:"d M Y" }} • {{ t.category }}
+                </p>
+            </div>
+            
+            <div class="flex items-center justify-end pr-4 w-1/3">
+                <span class="font-bold text-sm {% if t.type == 'IN' %}text-emerald-600{% else %}text-red-600{% endif %}">
+                    {% if t.type == 'IN' %}+{% else %}-{% endif %}
+                    {{ t.total_amount|intcomma }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-10 text-slate-400">
+            <p class="text-4xl mb-2">🍃</p>
+            <p>Belum ada transaksi.<br>Mulai catat biar gak boncos!</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,10 +1,9 @@
-    
-{% extends 'layout/base-landing.html' %} 
-{% block content %} 
-{% include 'partials/landingpage/hero-section.html' %} 
-{% include 'partials/landingpage/infografis-section.html' %} 
-{% include 'partials/landingpage/feature-section.html' %} 
-{% include 'partials/landingpage/how-to-use.html' %} 
-{% include 'partials/landingpage/faq-section.html' %} 
-{% endblock %}
+{% extends 'base.html' %}
 
+{% block content %}
+{% include 'partials/hero-section.html' %}
+{% include 'partials/infografis-section.html' %}
+{% include 'partials/how-to-use.html' %}
+{% include 'partials/feature-section.html' %}
+{% include 'partials/faq-section.html' %}
+{% endblock %}
