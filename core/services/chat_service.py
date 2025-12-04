@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from .gemini_client import GeminiClient
 from .prompts import get_system_prompt, get_reaction_prompt
-from ..models import Transaction, ChatHistory
+from ..models import Transaction, ChatHistory, UserProfile
 
 class ChatService:
     def __init__(self, user):
@@ -62,6 +62,9 @@ class ChatService:
         """
         # 1. Ambil Data Keuangan
         balance, income, _ = self.get_financial_context()
+
+        if balance < 0:
+            return "DARURAT! Saldo lo minus woy! Ini namanya gali lubang tutup lubang. Stop jajan atau cari duit sekarang!"
         
         # 2. Hitung Rasio Dampak (Hanya untuk pengeluaran)
         income_ratio = 0

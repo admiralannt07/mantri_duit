@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
@@ -85,8 +85,16 @@ def add_transaction_manual(request):
             reaction = service.react_to_transaction(t)
             reaction = reaction.replace('"', '').replace("'", "")
 
-            if t_type == 'IN':
-                messages.success(request, f"💰 Masuk! Kata Mantri: \"{reaction}\"")
+            # Cek saldo user setelah transaksi ini
+            # Kita hitung manual cepat atau query ulang
+            current_balance = Transaction.objects.filter(user=request.user, type='IN').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+            current_balance -= Transaction.objects.filter(user=request.user, type='OUT').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+            if current_balance < 0:
+                    # GUNAKAN EXTRA_TAGS 'danger'
+                    messages.add_message(request, messages.ERROR, f"🚨 SALDO MINUS! Kata Mantri: \"{reaction}\"", extra_tags='danger')
+            elif t_type == 'IN':
+                messages.success(request, f"💰 Masuk Coy! Kata Mantri: \"{reaction}\"")
             else:
                 messages.warning(request, f"💸 Tercatat. Kata Mantri: \"{reaction}\"")
         except Exception as e:
@@ -106,23 +114,21 @@ def scan_receipt(request):
             image_file = request.FILES['receipt_image']
             result = ocr.extract_receipt_data(image_file)
             
-            # 1. Cek Error Teknis AI (misal API down)
+            # 1. Cek Error Teknis AI
             if "error" in result:
                 messages.error(request, result["error"])
                 return redirect('scan_receipt')
 
-            # 2. SATPAM: Cek Validitas Gambar (Dari Prompt Baru)
+            # 2. SATPAM: Cek Validitas Gambar
             is_valid = result.get('is_valid_receipt', False)
             if not is_valid:
                 messages.error(request, "❌ Gambar ditolak! Ini bukan nota transaksi atau bukti transfer yang valid.")
                 return redirect('scan_receipt')
 
-            # 3. DATA CLEANING (Anti-Crash Integrity Error)
-            # Handle kasus jika AI mengembalikan null/None
+            # 3. DATA CLEANING & HANDLING NULL
             merchant = result.get('merchant_name') or 'Unknown'
             amount = result.get('total_amount')
             
-            # Paksa amount jadi integer 0 jika None atau invalid
             if amount is None:
                 amount = 0
             else:
@@ -131,12 +137,12 @@ def scan_receipt(request):
                 except:
                     amount = 0
 
-            # Double Check: Kalau lolos is_valid tapi amount 0, tolak juga (opsional, tapi aman)
+            # Double Check nominal 0
             if amount == 0:
                  messages.warning(request, "⚠️ Nota terbaca tapi nominal 0. Pastikan total harga terlihat jelas.")
                  return redirect('scan_receipt')
 
-            # --- SIMPAN KE DB (Aman dari Integrity Error) ---
+            # --- SIMPAN KE DB ---
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.merchant_name = merchant
@@ -144,6 +150,7 @@ def scan_receipt(request):
             transaction.transaction_date = result.get('transaction_date') or timezone.now().date()
             transaction.category = result.get('category', 'Lain-lain')
             
+            # Auto Detect Type (IN/OUT)
             ai_type = result.get('transaction_type')
             if ai_type not in ['IN', 'OUT']:
                 ai_type = 'OUT'
@@ -152,68 +159,30 @@ def scan_receipt(request):
             transaction.raw_ocr_text = str(result)
             transaction.save()
             
-            # AI Reaction
+            # --- AI REACTION & SALDO CHECK ---
             try:
                 service = ChatService(request.user)
                 reaction = service.react_to_transaction(transaction)
-                icon = "💰" if transaction.type == 'IN' else "✅"
-                messages.success(request, f"{icon} Berhasil! Kata Mantri: \"{reaction}\"")
-            except:
-                messages.success(request, "Nota berhasil disimpan.")
-            
-            return redirect('dashboard')
-    else:
-        form = ReceiptForm()
-
-    return render(request, 'dashboard/scan.html', {'form': form})
-    if request.method == 'POST':
-        form = ReceiptForm(request.POST, request.FILES)
-        if form.is_valid():
-            ocr = OCRHandler()
-            image_file = request.FILES['receipt_image']
-            result = ocr.extract_receipt_data(image_file)
-            
-            # 1. Cek Error Teknis AI
-            if "error" in result:
-                messages.error(request, result["error"])
-                return redirect('scan_receipt')
-
-            # 2. VALIDASI DATA SAMPAH (Satpam Baru)
-            # Kalau merchant unknown DAN total 0, kemungkinan besar bukan nota
-            merchant = result.get('merchant_name', 'Unknown')
-            amount = result.get('total_amount', 0)
-            
-            if (merchant == 'Unknown' or merchant == 'Unknown Store') and amount == 0:
-                messages.warning(request, "Gambar tidak dikenali sebagai nota/bukti transfer yang valid. Coba foto ulang yang jelas.")
-                return redirect('scan_receipt')
-
-            # Kalau lolos validasi, baru simpan
-            transaction = form.save(commit=False)
-            transaction.user = request.user
-            
-            transaction.merchant_name = merchant
-            transaction.total_amount = amount
-            transaction.transaction_date = result.get('transaction_date')
-            transaction.category = result.get('category', 'Lain-lain')
-            
-            # FIX INTEGRITY ERROR: Pastikan Type tidak pernah None
-            ai_type = result.get('transaction_type')
-            if ai_type not in ['IN', 'OUT']:
-                ai_type = 'OUT' # Default fallback
-            transaction.type = ai_type
-            
-            transaction.raw_ocr_text = str(result)
-            transaction.save()
-            
-            # AI Reaction (Code lama tetap sama)
-            try:
-                service = ChatService(request.user)
-                reaction = service.react_to_transaction(transaction)
-                if transaction.type == 'IN':
+                
+                # HITUNG ULANG SALDO SEKARANG (Termasuk transaksi yang baru saja disimpan)
+                total_in = Transaction.objects.filter(user=request.user, type='IN').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+                total_out = Transaction.objects.filter(user=request.user, type='OUT').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+                current_balance = total_in - total_out
+                
+                # LOGIK NOTIFIKASI
+                if current_balance < 0:
+                    # Trigger Notif Merah (Danger)
+                    messages.add_message(request, messages.ERROR, f"🚨 SALDO MINUS! Kata Mantri: \"{reaction}\"", extra_tags='danger')
+                elif transaction.type == 'IN':
+                    # Trigger Notif Hijau (Pemasukan)
                     messages.success(request, f"💰 Masuk! Kata Mantri: \"{reaction}\"")
                 else:
+                    # Trigger Notif Hijau/Normal (Pengeluaran wajar)
                     messages.success(request, f"✅ Keluar! Kata Mantri: \"{reaction}\"")
+                    
             except Exception as e:
+                # Fallback jika AI error
+                print(f"AI Error: {e}")
                 messages.success(request, "Nota berhasil disimpan.")
             
             return redirect('dashboard')
@@ -401,3 +370,37 @@ def settings_page(request):
         'password_form': password_form
     }
     return render(request, 'dashboard/settings.html', context)
+
+@login_required(login_url='/login/')
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        # Manual Update (Sama kayak add_manual logicnya)
+        transaction.type = request.POST.get('type')
+        transaction.total_amount = int(request.POST.get('amount'))
+        transaction.description = request.POST.get('description')
+        transaction.merchant_name = request.POST.get('description') # Samakan saja
+        transaction.transaction_date = request.POST.get('date')
+        
+        # Handle New Image (Optional)
+        if request.FILES.get('manual_image'):
+            transaction.receipt_image = request.FILES.get('manual_image')
+            
+        transaction.save()
+        messages.success(request, "Data transaksi berhasil diperbarui!")
+        return redirect('transaction_history')
+
+    return render(request, 'dashboard/edit_transaction.html', {'t': transaction})
+
+@login_required(login_url='/login/')
+def delete_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        transaction.delete()
+        messages.success(request, "Transaksi berhasil dihapus.")
+        return redirect('transaction_history')
+        
+    # Kalau akses via GET (salah pencet), lempar balik aja
+    return redirect('transaction_history')

@@ -27,4 +27,6 @@ urlpatterns = [
     path('history/', views.transaction_history, name='transaction_history'),
     path('dashboard/profile/', views.profile_settings, name='profile_settings'),
     path('dashboard/settings/', views.settings_page, name='settings_page'),
+    path('dashboard/history/edit/<uuid:pk>/', views.edit_transaction, name='edit_transaction'),
+    path('dashboard/history/delete/<uuid:pk>/', views.delete_transaction, name='delete_transaction'),
 ]
