@@ -1,0 +1,57 @@
+{% extends 'layout/base-dashboard.html' %} 
+{% load static %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto w-full px-4 py-8">
+    <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden relative">
+        <div class="p-8 sm:p-10 relative z-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6">Edit Transaksi</h2>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="form-control w-full">
+                    <label class="label pl-0 pb-2"><span class="text-xs font-bold text-slate-500 uppercase">Jenis</span></label>
+                    <select name="type" class="select w-full h-12 rounded-xl border-slate-300">
+                        <option value="IN" {% if t.type == 'IN' %}selected{% endif %}>Pemasukan</option>
+                        <option value="OUT" {% if t.type == 'OUT' %}selected{% endif %}>Pengeluaran</option>
+                    </select>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label pl-0 pb-2"><span class="text-xs font-bold text-slate-500 uppercase">Nominal</span></label>
+                    <input type="number" name="amount" value="{{ t.total_amount }}" class="input w-full h-14 pl-4 rounded-xl border-slate-300 font-bold text-lg" required />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-control w-full">
+                        <label class="label pl-0 pb-2"><span class="text-xs font-bold text-slate-500 uppercase">Keterangan</span></label>
+                        <input type="text" name="description" value="{{ t.description }}" class="input w-full h-12 rounded-xl border-slate-300" required />
+                    </div>
+                    <div class="form-control w-full">
+                        <label class="label pl-0 pb-2"><span class="text-xs font-bold text-slate-500 uppercase">Tanggal</span></label>
+                        <input type="date" name="date" value="{{ t.transaction_date|date:'Y-m-d' }}" class="input w-full h-12 rounded-xl border-slate-300" />
+                    </div>
+                </div>
+
+                {% if t.receipt_image %}
+                <div class="w-full h-32 bg-slate-100 rounded-xl overflow-hidden relative">
+                    <img src="{{ t.receipt_image.url }}" class="w-full h-full object-contain">
+                    <span class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">Gambar Saat Ini</span>
+                </div>
+                {% endif %}
+
+                <div class="form-control w-full">
+                    <label class="label pl-0 pb-2"><span class="text-xs font-bold text-slate-500 uppercase">Ganti Bukti (Opsional)</span></label>
+                    <input type="file" name="manual_image" accept="image/*" class="file-input file-input-bordered w-full rounded-xl" />
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <a href="{% url 'transaction_history' %}" class="btn btn-ghost flex-1">Batal</a>
+                    <button type="submit" class="btn bg-teal-600 hover:bg-teal-700 text-white h-12 rounded-xl flex-2 border-none transition-all font-bold normal-case flex items-center justify-center gap-2 group py-4">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

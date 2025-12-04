@@ -154,8 +154,9 @@
                             <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Toko/Deskripsi</th>
                             <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Kategori</th>
                             <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Tipe</th>
-                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase text-right">Jumlah</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase text-center">Jumlah</th>
                             <th class="text-xs md:text-sm font-bold text-slate-600 uppercase">Nota</th>
+                            <th class="text-xs md:text-sm font-bold text-slate-600 uppercase text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="transactionTableBody">
@@ -199,6 +200,25 @@
                                 {% else %}
                                     <span class="text-slate-300 text-xs">-</span>
                                 {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <a href="{% url 'edit_transaction' t.id %}" class="btn btn-square btn-sm btn-ghost text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 tooltip" data-tip="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+
+                                    <button type="button" 
+                                        data-url="{% url 'delete_transaction' t.id %}"
+                                        onclick="confirmDelete(this.getAttribute('data-url'))"
+                                        class="btn btn-square btn-sm btn-ghost text-slate-400 hover:text-red-600 hover:bg-red-50 tooltip" 
+                                        data-tip="Hapus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                </button>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -264,6 +284,39 @@
     </form>
 </dialog>
 
+<!-- Modal for delete -->
+<dialog id="deleteModal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box bg-white rounded-3xl p-8">
+    <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 mb-4 animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+        <h3 class="font-montserrat font-bold text-xl text-slate-800">Yakin mau hapus?</h3>
+        <p class="py-4 text-slate-500 font-poppins text-sm">
+            Data transaksi ini akan hilang selamanya dan <b>saldo Anda akan berubah</b>. Tindakan ini tidak bisa dibatalkan.
+        </p>
+    </div>
+    
+    <div class="modal-action flex justify-center gap-3 w-full mt-2">
+      <form method="dialog">
+        <button class="btn btn-ghost rounded-xl px-6 hover:bg-slate-100 text-slate-600">Batal</button>
+      </form>
+      
+      <form id="deleteForm" method="POST" action="">
+          {% csrf_token %}
+          <button type="submit" class="btn bg-red-600 hover:bg-red-700 text-white border-none rounded-xl px-8 shadow-lg shadow-red-200">
+              Ya, Hapus
+          </button>
+      </form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
 <script>
     function filterTransactionsRealtime() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
@@ -297,9 +350,26 @@
         }
     }
 
+    // FUNGSI YANG HILANG
     function showImageModal(imageUrl) {
-        document.getElementById('modalImage').src = imageUrl;
-        document.getElementById('imageModal').showModal();
+        const modalImg = document.getElementById('modalImage');
+        const modal = document.getElementById('imageModal');
+        
+        if (imageUrl && imageUrl !== 'None' && imageUrl !== '') {
+            modalImg.src = imageUrl;
+            modal.showModal();
+        } else {
+            console.error("Gambar tidak valid atau kosong");
+            // Optional: Kasih alert ke user
+            // alert("Gambar tidak tersedia");
+        }
+    }
+
+    function confirmDelete(deleteUrl) {
+        // Set action URL form delete sesuai ID transaksi
+        document.getElementById('deleteForm').action = deleteUrl;
+        // Buka Modal DaisyUI
+        document.getElementById('deleteModal').showModal();
     }
 </script>
 {% endblock %}
