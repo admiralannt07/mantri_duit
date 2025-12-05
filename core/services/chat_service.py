@@ -23,6 +23,22 @@ class ChatService:
             
         # RETURN 3 VARIABLE: Balance, Income, dan History String
         return balance, income, trans_str
+    
+    # Fitur Baru: Ambil Riwayat Obrolan
+    def get_chat_history_context(self):
+        # Ambil 6 chat terakhir (3 pasang tanya-jawab)
+        last_chats = ChatHistory.objects.filter(user=self.user).order_by('-timestamp')[:6]
+        
+        # Karena order_by desc (terbaru diatas), kita balik biar urut kronologis (lama -> baru)
+        last_chats = reversed(last_chats)
+        
+        history_str = ""
+        for chat in last_chats:
+            history_str += f"User: {chat.message}\nMagatra: {chat.response}\n---\n"
+            
+        if not history_str:
+            return "Belum ada riwayat obrolan."
+        return history_str
 
     def get_business_context(self):
         # FITUR BARU: Ambil deskripsi usaha
@@ -36,13 +52,14 @@ class ChatService:
         # 1. Siapkan Data (Unpack 3 variable)
         balance, income, trans_str = self.get_financial_context()
         business_ctx = self.get_business_context()
+        history_ctx = self.get_chat_history_context()
         
         # 2. Rakit Prompt (Kirim income dan business context juga ke prompt generator)
         # Format angka pake k koma separator biar AI gampang baca
-        system_prompt = get_system_prompt(self.user.username, f"{balance:,}", f"{income:,}", trans_str, business_ctx)
+        system_prompt = get_system_prompt(self.user.username, f"{balance:,}", f"{income:,}", trans_str, business_ctx, history_ctx)
         
         # 3. Kirim ke Gemini
-        full_prompt = f"{system_prompt}\n\nUser bertanya: {user_message}\nJawab:"
+        full_prompt = f"{system_prompt}\n\nUser bertanya sekarang: {user_message}\nJawab (Ingat Rules Misdirection):"
         
         response_text = self.client.generate_text(full_prompt)
         
