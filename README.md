@@ -52,7 +52,7 @@ Manajemen riwayat transaksi yang lengkap dengan fitur pencarian, filter, dan kem
 
 Lihat demonstrasi lengkap fitur MAGATRA dalam aksi:
 
-[LINK VIDEO DEMO DISINI]
+<video width="1406" height="672" alt="banner_magatra" src="https://github.com/user-attachments/assets/524c6252-ff34-4229-8d1a-8471d63030c8" />
 
 ---
 
