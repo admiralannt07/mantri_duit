@@ -20,39 +20,32 @@ Lihat bagaimana MAGATRA bekerja melalui tangkapan layar fitur utamanya di bawah 
 ### 1. Dashboard & Reality Check
 Visualisasi arus kas real-time dengan status kesehatan finansial yang "jujur" dan indikator visual sederhana.
 
-<img width="3640" height="auto" alt="dashboard magatra" src="https://github.com/user-attachments/assets/b8fc39f2-145a-4ae5-9ce8-5eabaeed6ea2" />
+<img width="600" height="auto" alt="dashboard magatra" src="https://github.com/user-attachments/assets/b8fc39f2-145a-4ae5-9ce8-5eabaeed6ea2" />
 
 
 ### 2. Smart OCR Scanning
 Proses pindai struk belanja fisik yang otomatis mendeteksi merchant, total, dan kategori menggunakan Google Gemini 2.5 Flash.
 
-<img width="3840" height="2160" alt="scan nota magatra" src="https://github.com/user-attachments/assets/1ec3e3cd-5721-48cc-aa33-a165d38cc5b7" />
+<img width="600" height="auto" alt="scan nota magatra" src="https://github.com/user-attachments/assets/1ec3e3cd-5721-48cc-aa33-a165d38cc5b7" />
 
 
 ### 3. Sarcastic Chat Advisor
 Interaksi dengan AI "Satpam Keuangan" yang memberikan respon lucu namun menohok saat pengguna ingin melakukan pengeluaran impulsif.
 
-<img width="3840" height="2160" alt="chat mantri magatra" src="https://github.com/user-attachments/assets/fdf7f961-f9c5-4d4b-82a8-65553f252fc7" />
+<img width="600" height="auto" alt="chat mantri magatra" src="https://github.com/user-attachments/assets/fdf7f961-f9c5-4d4b-82a8-65553f252fc7" />
 
 
 ### 4. Mobile Navigation & Context Switching
 Desain responsif untuk perangkat mobile. Fitur **Context Switching** pada header memungkinkan pengguna mengganti profil/konteks usaha (misal: dari "Warung Kelontong" ke "Startup Tech") secara instan, yang akan mengubah gaya bahasa dan perspektif roasting dari AI.
 
-<img width="3840" height="2160" alt="konteks switch magatra" src="https://github.com/user-attachments/assets/44f0ebf8-3363-4a45-b42e-ed0d89ad1bb8" />
-<img width="430" height="932" alt="mobile header responsive" src="https://github.com/user-attachments/assets/db8297fe-a04f-4afd-9276-9c69e178bd11" />
+<img width="600" height="auto" alt="konteks switch magatra" src="https://github.com/user-attachments/assets/44f0ebf8-3363-4a45-b42e-ed0d89ad1bb8" />
+<img width="auto" height="340" alt="mobile header responsive" src="https://github.com/user-attachments/assets/db8297fe-a04f-4afd-9276-9c69e178bd11" />
 
 
 ### 5. Transaction History (CRUD)
 Manajemen riwayat transaksi yang lengkap dengan fitur pencarian, filter, dan kemampuan edit/hapus data.
 
-<img width="3840" height="2160" alt="history magatra" src="https://github.com/user-attachments/assets/e5b86301-2996-4aed-89d2-32ff20490410" />
-
-
-### Demo Video
-
-Lihat demonstrasi lengkap fitur MAGATRA dalam aksi:
-
-<video width="1406" height="672" alt="banner_magatra" src="https://github.com/user-attachments/assets/524c6252-ff34-4229-8d1a-8471d63030c8" />
+<img width="600" height="auto" alt="history magatra" src="https://github.com/user-attachments/assets/e5b86301-2996-4aed-89d2-32ff20490410" />
 
 ---
 
@@ -210,6 +203,13 @@ python manage.py runserver
 ```
 
 Buka browser dan akses aplikasi di: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+### Demo Video
+
+Lihat demonstrasi lengkap fitur MAGATRA dalam aksi:
+
+<video width="1406" height="672" autoplay 
+    loop alt="banner_magatra" src="https://github.com/user-attachments/assets/524c6252-ff34-4229-8d1a-8471d63030c8" />
 
 -----
 
