@@ -204,6 +204,35 @@ python manage.py runserver
 
 Buka browser dan akses aplikasi di: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
+--------
+
+## Testing Strategy
+
+MAGATRA memprioritaskan stabilitas aplikasi. Kami menerapkan **Unit Testing** dan **Integration Testing** yang komprehensif untuk memastikan setiap fitur berjalan sesuai logika bisnis.
+
+### Advanced Mocking Architecture
+Salah satu tantangan dalam mengetes aplikasi AI adalah ketergantungan pada API eksternal (Google Gemini).
+
+Untuk mengatasinya, kami menggunakan teknik **Mocking (`unittest.mock`)**. Sistem testing kami memanipulasi respons AI secara lokal sehingga:
+1.  **Cepat**: Tidak ada latensi jaringan.
+2.  **Stabil**: Tidak terpengaruh koneksi internet.
+3.  **Cost-Effective**: Tidak memakan kuota API Key saat testing.
+
+### Running Tests
+Pastikan virtual environment aktif, lalu jalankan perintah:
+
+```bash
+python manage.py test
+````
+
+Untuk melihat laporan cakupan kode (*Code Coverage*):
+
+```bash
+coverage run --source='core' manage.py test
+coverage report
+```
+
+
 ### Demo Video
 
 Lihat demonstrasi lengkap fitur MAGATRA dalam aksi:
