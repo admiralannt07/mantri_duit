@@ -20,7 +20,7 @@ Lihat bagaimana MAGATRA bekerja melalui tangkapan layar fitur utamanya di bawah 
 ### 1. Dashboard & Reality Check
 Visualisasi arus kas real-time dengan status kesehatan finansial yang "jujur" dan indikator visual sederhana.
 
-<img width="3840" height="2160" alt="dashboard magatra" src="https://github.com/user-attachments/assets/b8fc39f2-145a-4ae5-9ce8-5eabaeed6ea2" />
+<img width="3640" height="auto" alt="dashboard magatra" src="https://github.com/user-attachments/assets/b8fc39f2-145a-4ae5-9ce8-5eabaeed6ea2" />
 
 
 ### 2. Smart OCR Scanning
